@@ -225,7 +225,7 @@ int main() {
 #ifdef _DEBUG
   const size_t num_elements = 32;
 #else
-  const size_t num_elements = 1 << 15;
+  const size_t num_elements = 1 << 20;
 #endif
 
   for (auto &generator : test_generators) {
