@@ -64,7 +64,7 @@ std::vector<uint64_t> generate_random_01_values(size_t num_elements) {
   result.reserve(num_elements);
   for (size_t i = 0; i < num_elements; i++) {
     uint64_t value = (uint64_t)dist(gen);
-    result.emplace_back(value ? 0xffff : 0);
+    result.emplace_back(value ? 1 : 0);
   }
   return result;
 }
@@ -75,7 +75,7 @@ template <typename It> void my_insertion_sort(It begin, It end) {
   }
   for (It i = begin + 1; i != end; i++) {
     for (It j = i; j > begin && (*(j - 1)) > (*j); j--) {
-      std::swap(*j, *(j - 1));
+      std::iter_swap(j, j - 1);
     }
   }
 }
@@ -213,10 +213,10 @@ int main() {
 #endif
 
   for (auto &generator : test_generators) {
-    std::cout << generator.first << " (" << num_elements << " elements)"
-              << std::endl;
-
+    std::cout << generator.first;
     const auto values = generator.second(num_elements);
+    std::cout << " (" << values.size() << " elements)" << std::endl;
+
     for (auto &s : sorters) {
       auto values_copy = values;
 
