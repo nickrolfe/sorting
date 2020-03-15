@@ -80,24 +80,40 @@ template <typename It> void my_insertion_sort(It begin, It end) {
   }
 }
 
-template <unsigned threshold, typename It> void my_qsort(It begin, It end) {
-  // TODO: resort to heapsort if we have too many recursions
-  while (end - begin > threshold) {
-    It pivot = end - 1;
+template <unsigned threshold, typename It>
+static void my_qsort_helper(size_t level, It begin, It end) {
+  while (level < 32 && end - begin > threshold) {
+    auto pivot_val = *(begin + ((end - begin - 1) >> 1));
     It i = begin;
-    for (It j = begin; j != end; j++) {
-      if (*j < *pivot) {
-        std::swap(*i, *j);
+    It j = end-1;
+    while (true) {
+      while (*i < pivot_val) {
         i++;
       }
+      while (*j > pivot_val) {
+        j--;
+      }
+      if (i >= j) {
+        break;
+      }
+      std::iter_swap(i, j);
+      i++;
+      j--;
     }
-    std::swap(*i, *pivot);
-    my_qsort<threshold, It>(i + 1, end);
-    end = i;
+    level++;
+    my_qsort_helper<threshold, It>(level, j + 1, end);
+    end = j+1;
   }
-  if constexpr (threshold > 1) {
+  if (level >= 32) {
+    std::make_heap(begin, end);
+    std::sort_heap(begin, end);
+  } else if constexpr (threshold > 1) {
     my_insertion_sort(begin, end);
   }
+}
+
+template <unsigned threshold, typename It> void my_qsort(It begin, It end) {
+  my_qsort_helper<threshold, It>(0, begin, end);
 }
 
 template <unsigned power> void my_radix_sort(uint64_t *input, size_t size) {
