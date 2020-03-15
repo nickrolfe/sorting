@@ -32,6 +32,29 @@ std::vector<uint64_t> generate_sorted_values(size_t num_elements) {
   return result;
 }
 
+std::vector<uint64_t> generate_reversed_values(size_t num_elements) {
+  std::vector<uint64_t> result;
+
+  result.reserve(num_elements);
+  for (size_t i = 0; i < num_elements; i++) {
+    result.emplace_back(num_elements - i - 1);
+  }
+  return result;
+}
+
+std::vector<uint64_t> generate_organ_pipe_values(size_t num_elements) {
+  std::vector<uint64_t> result;
+
+  result.reserve(num_elements);
+  for (size_t i = 0; i < num_elements / 2; i++) {
+    result.emplace_back(i);
+  }
+  for (size_t i = 0; i < (num_elements - (num_elements / 2)); i++) {
+    result.emplace_back(num_elements / 2 - i);
+  }
+  return result;
+}
+
 std::vector<uint64_t> generate_random_01_values(size_t num_elements) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -179,6 +202,8 @@ int main() {
       {"Random uniform uint64 distribution", generate_random_values},
       {"Random [0, 1]", generate_random_01_values},
       {"Already sorted", generate_sorted_values},
+      {"Reversed", generate_reversed_values},
+      {"Organ pipe", generate_organ_pipe_values},
   };
 
 #ifdef _DEBUG
